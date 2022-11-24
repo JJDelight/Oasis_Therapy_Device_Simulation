@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>Images/checkmark.png</file>
+        <file>Images/DownArrow.png</file>
+        <file>Images/nextButton.png</file>
+        <file>Images/Oasis Device.png</file>
+        <file>Images/powerButton.png</file>
+        <file>Images/UpArrow.png</file>
+    </qresource>
+</RCC>
