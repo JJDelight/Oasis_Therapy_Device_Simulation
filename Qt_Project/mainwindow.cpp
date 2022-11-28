@@ -7,10 +7,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     power = false;
+
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
+    connect(timer, &QTimer::timeout, this, &MainWindow::togglePower);
+
+    //connect functions
+    connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
+    
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow(){
     delete ui;
 }
 
@@ -77,23 +84,18 @@ void MainWindow::togglePower(){
     if(power){
         ui->powerLabel->setStyleSheet("background-color: white");
         power = !power;
+        timer->stop();
     }else{
         ui->powerLabel->setStyleSheet("background-color: yellow");
         power = !power;
+        timer->start(20000); //Timer to turn off device if no function called (20 seconds)
     }
 }
 
 //Online Code to make code freeze and not GUI
 // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
-void MainWindow::delay(int secs)
-{
+void MainWindow::delay(int secs){
     QTime dieTime = QTime::currentTime().addSecs(secs);
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-}
-
-
-void MainWindow::on_powerButton_clicked()
-{
-    togglePower();
 }

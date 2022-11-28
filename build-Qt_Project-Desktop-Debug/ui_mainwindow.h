@@ -15,7 +15,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
@@ -30,7 +29,6 @@ public:
     QLabel *label;
     QTextBrowser *textBrowser;
     QCheckBox *checkBox;
-    QProgressBar *progressBar;
     QPushButton *lightOne;
     QPushButton *lightTwo;
     QPushButton *lightThree;
@@ -67,11 +65,6 @@ public:
         checkBox->setObjectName(QString::fromUtf8("checkBox"));
         checkBox->setGeometry(QRect(710, 320, 82, 23));
         checkBox->setAutoFillBackground(true);
-        progressBar = new QProgressBar(centralwidget);
-        progressBar->setObjectName(QString::fromUtf8("progressBar"));
-        progressBar->setGeometry(QRect(1420, 460, 131, 23));
-        progressBar->setLayoutDirection(Qt::LeftToRight);
-        progressBar->setValue(24);
         lightOne = new QPushButton(centralwidget);
         lightOne->setObjectName(QString::fromUtf8("lightOne"));
         lightOne->setGeometry(QRect(450, 550, 61, 25));

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTime>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,15 +18,14 @@ public:
     ~MainWindow();
     void softOn();
     void softOff();
-    void togglePower();
     void delay(int seconds);// Function to delay a function for x seconds
 
 private slots:
-
-    void on_powerButton_clicked();
+    void togglePower();
 
 private:
     Ui::MainWindow *ui;
     bool power;
+    QTimer *timer;
 };
 #endif // MAINWINDOW_H
