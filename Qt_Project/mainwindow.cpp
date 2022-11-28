@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    power = false;
 }
 
 MainWindow::~MainWindow()
@@ -72,9 +73,18 @@ void MainWindow::softOff(){
     ui->lightOne->setStyleSheet("background-color: white");
 }
 
+void MainWindow::togglePower(){
+    if(power){
+        ui->powerLabel->setStyleSheet("background-color: white");
+        power = !power;
+    }else{
+        ui->powerLabel->setStyleSheet("background-color: yellow");
+        power = !power;
+    }
+}
+
 //Online Code to make code freeze and not GUI
 // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
-
 void MainWindow::delay(int secs)
 {
     QTime dieTime = QTime::currentTime().addSecs(secs);
@@ -82,8 +92,8 @@ void MainWindow::delay(int secs)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
-void MainWindow::on_lightOne_clicked()
+
+void MainWindow::on_powerButton_clicked()
 {
-    softOn();
-    softOff();
+    togglePower();
 }

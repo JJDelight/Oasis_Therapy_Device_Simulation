@@ -17,12 +17,15 @@ public:
     ~MainWindow();
     void softOn();
     void softOff();
+    void togglePower();
     void delay(int seconds);// Function to delay a function for x seconds
 
 private slots:
-    void on_lightOne_clicked();
+
+    void on_powerButton_clicked();
 
 private:
     Ui::MainWindow *ui;
+    bool power;
 };
 #endif // MAINWINDOW_H
