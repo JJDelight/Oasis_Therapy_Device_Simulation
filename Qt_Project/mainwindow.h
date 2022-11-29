@@ -19,7 +19,8 @@ public:
     void softOn();
     void softOff();
     void delay(int seconds);// Function to delay a function for x seconds
-
+    void displayBattery();
+    
 private slots:
     void togglePower();
 

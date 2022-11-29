@@ -99,3 +99,7 @@ void MainWindow::delay(int secs){
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
+
+void MainWindow::displayBattery(){
+    
+}
