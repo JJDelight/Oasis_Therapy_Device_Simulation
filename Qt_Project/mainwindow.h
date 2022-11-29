@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTime>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,8 +16,17 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void softOn();
+    void softOff();
+    void delay(int seconds);// Function to delay a function for x seconds
+    void displayBattery();
+    
+private slots:
+    void togglePower();
 
 private:
     Ui::MainWindow *ui;
+    bool power;
+    QTimer *timer;
 };
 #endif // MAINWINDOW_H
