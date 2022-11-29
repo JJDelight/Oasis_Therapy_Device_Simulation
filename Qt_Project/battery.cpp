@@ -1,7 +1,7 @@
 #include "battery.h"
 
 Battery::Battery(){
-    int level = 1000;
+    level = 1000;
 };
 
 void Battery::setLevel(int power){
@@ -9,5 +9,5 @@ void Battery::setLevel(int power){
 }
 
 int Battery::getLevel(){
-    return power;
+    return level;
 }
