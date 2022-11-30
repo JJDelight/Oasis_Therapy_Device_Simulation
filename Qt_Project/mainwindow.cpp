@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     power = false;
     bat = Battery();
-    bat.setLevel(125);
 
     timer = new QTimer(this);
     timer->setSingleShot(true);
