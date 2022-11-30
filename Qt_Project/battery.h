@@ -8,6 +8,7 @@ public:
     Battery();
     void setLevel(int power);
     int getLevel();
+    void fullPower();
 
 private:
     int level;

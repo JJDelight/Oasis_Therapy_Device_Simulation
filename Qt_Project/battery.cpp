@@ -11,3 +11,7 @@ void Battery::setLevel(int power){
 int Battery::getLevel(){
     return level;
 }
+
+void Battery::fullPower(){
+    level = 1000;
+}

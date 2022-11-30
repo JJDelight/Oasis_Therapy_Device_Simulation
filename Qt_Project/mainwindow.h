@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTime>
 #include <QTimer>
+#include "battery.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,10 +24,12 @@ public:
     
 private slots:
     void togglePower();
+    void increasePower();
 
 private:
     Ui::MainWindow *ui;
     bool power;
     QTimer *timer;
+    Battery bat;
 };
 #endif // MAINWINDOW_H

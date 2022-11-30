@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "battery.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -7,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     power = false;
+    bat = Battery();
 
     timer = new QTimer(this);
     timer->setSingleShot(true);
@@ -14,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
+    connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::increasePower);
     
 }
 
@@ -91,6 +94,15 @@ void MainWindow::togglePower(){
         timer->start(20000); //Timer to turn off device if no function called (20 seconds)
     }
 }
+
+
+void MainWindow::increasePower(){
+    bat.setLevel(30);
+    printf("Power is %d\n", bat.getLevel());
+    bat.fullPower();
+    printf("Power is %d\n", bat.getLevel());
+}
+
 
 //Online Code to make code freeze and not GUI
 // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
