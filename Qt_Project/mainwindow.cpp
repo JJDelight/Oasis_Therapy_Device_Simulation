@@ -9,10 +9,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     power = false;
     bat = Battery();
+    bat.setLevel(125);
 
     timer = new QTimer(this);
     timer->setSingleShot(true);
     connect(timer, &QTimer::timeout, this, &MainWindow::togglePower);
+
+    batTimer = new QTimer(this);    //Interval of time for battery to display
+    batTimer->setInterval(12000);
+    connect(batTimer, &QTimer::timeout, this, &MainWindow::displayBattery);
+    batTimer->start();
 
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
@@ -113,5 +119,53 @@ void MainWindow::delay(int secs){
 }
 
 void MainWindow::displayBattery(){
-    
+    int div = bat.getLevel() / 125;
+    bat.setLevel(bat.getLevel() - 25);
+    QTextStream(stdout) << "div: " << div << endl;
+
+    switch(div){
+        case 8:
+            ui->lightEight->setStyleSheet("background-color: red");
+        case 7:
+            ui->lightSeven->setStyleSheet("background-color: red");
+        case 6:
+            ui->lightSix->setStyleSheet("background-color: yellow");
+        case 5:
+            ui->lightFive->setStyleSheet("background-color: yellow");
+        case 4:
+            ui->lightFour->setStyleSheet("background-color: yellow");
+        case 3:
+            ui->lightThree->setStyleSheet("background-color: green");
+            ui->lightTwo->setStyleSheet("background-color: green");
+            ui->lightOne->setStyleSheet("background-color: green");
+            break;
+        case 2:
+            for(int i=0; i<10; i++){
+                ui->lightTwo->setStyleSheet("background-color: green");
+                ui->lightOne->setStyleSheet("background-color: green");
+                delay(1);
+                ui->lightTwo->setStyleSheet("background-color: white");
+                ui->lightOne->setStyleSheet("background-color: white");
+                delay(1);
+            }
+            return;
+        case 1:
+            for(int i=0; i<10; i++){
+                ui->lightOne->setStyleSheet("background-color: green");
+                delay(1);
+                ui->lightOne->setStyleSheet("background-color: white");
+                delay(1);
+            }
+            return;
+    }
+    delay(5);
+
+    ui->lightEight->setStyleSheet("background-color: white");
+    ui->lightSeven->setStyleSheet("background-color: white");
+    ui->lightSix->setStyleSheet("background-color: white");
+    ui->lightFive->setStyleSheet("background-color: white");
+    ui->lightFour->setStyleSheet("background-color: white");
+    ui->lightThree->setStyleSheet("background-color: white");
+    ui->lightTwo->setStyleSheet("background-color: white");
+    ui->lightOne->setStyleSheet("background-color: white");
 }

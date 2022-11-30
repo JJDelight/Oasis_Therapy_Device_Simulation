@@ -388,6 +388,7 @@ compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
 moc_mainwindow.cpp: ../Qt_Project/mainwindow.h \
+		../Qt_Project/battery.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /media/sf_Comp3004/Project/3004_Final_Project/build-Qt_Project-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/media/sf_Comp3004/Project/3004_Final_Project/Qt_Project -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../Qt_Project/mainwindow.h -o moc_mainwindow.cpp
@@ -419,10 +420,12 @@ battery.o: ../Qt_Project/battery.cpp ../Qt_Project/battery.h
 dvc.o: ../Qt_Project/dvc.cpp ../Qt_Project/dvc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o dvc.o ../Qt_Project/dvc.cpp
 
-main.o: ../Qt_Project/main.cpp ../Qt_Project/mainwindow.h
+main.o: ../Qt_Project/main.cpp ../Qt_Project/mainwindow.h \
+		../Qt_Project/battery.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../Qt_Project/main.cpp
 
 mainwindow.o: ../Qt_Project/mainwindow.cpp ../Qt_Project/mainwindow.h \
+		../Qt_Project/battery.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../Qt_Project/mainwindow.cpp
 

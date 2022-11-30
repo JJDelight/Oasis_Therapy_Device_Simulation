@@ -5,7 +5,11 @@ Battery::Battery(){
 };
 
 void Battery::setLevel(int power){
-    level = power;
+    if(power < 0){
+        level = 0;
+    }else{
+        level = power;
+    }
 }
 
 int Battery::getLevel(){

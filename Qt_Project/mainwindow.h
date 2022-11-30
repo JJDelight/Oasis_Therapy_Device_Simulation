@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTime>
 #include <QTimer>
+#include <QTextStream>
 #include "battery.h"
 
 QT_BEGIN_NAMESPACE
@@ -30,6 +31,7 @@ private:
     Ui::MainWindow *ui;
     bool power;
     QTimer *timer;
+    QTimer *batTimer;
     Battery bat;
 };
 #endif // MAINWINDOW_H

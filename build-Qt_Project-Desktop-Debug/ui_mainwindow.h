@@ -43,6 +43,7 @@ public:
     QPushButton *nextBtn;
     QPushButton *checkBtn;
     QLabel *powerLabel;
+    QPushButton *pushButton;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -117,6 +118,9 @@ public:
         powerLabel->setObjectName(QString::fromUtf8("powerLabel"));
         powerLabel->setGeometry(QRect(840, 490, 54, 17));
         powerLabel->setAutoFillBackground(true);
+        pushButton = new QPushButton(centralwidget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setGeometry(QRect(1390, 490, 111, 71));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -155,6 +159,7 @@ public:
         nextBtn->setText(QString());
         checkBtn->setText(QString());
         powerLabel->setText(QString());
+        pushButton->setText(QApplication::translate("MainWindow", "Recharge Battery", nullptr));
     } // retranslateUi
 
 };
