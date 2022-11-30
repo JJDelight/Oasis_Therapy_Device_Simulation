@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "battery.h"
+
+//#include "session.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,6 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     power = false;
     bat = Battery();
+    timeSelection = 0;
+    sessionSelection = 0;
+    numRecs = 0;
 
     timer = new QTimer(this);
     timer->setSingleShot(true);
@@ -17,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     batTimer = new QTimer(this);    //Interval of time for battery to display
     batTimer->setInterval(12000);
     connect(batTimer, &QTimer::timeout, this, &MainWindow::displayBattery);
-    batTimer->start();
+//    batTimer->start();
 
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
@@ -90,10 +94,12 @@ void MainWindow::softOff(){
 
 void MainWindow::togglePower(){
     if(power){
+        softOn();
         ui->powerLabel->setStyleSheet("background-color: white");
         power = !power;
         timer->stop();
     }else{
+        softOff();
         ui->powerLabel->setStyleSheet("background-color: yellow");
         power = !power;
         timer->start(20000); //Timer to turn off device if no function called (20 seconds)
@@ -167,4 +173,111 @@ void MainWindow::displayBattery(){
     ui->lightThree->setStyleSheet("background-color: white");
     ui->lightTwo->setStyleSheet("background-color: white");
     ui->lightOne->setStyleSheet("background-color: white");
+}
+
+void MainWindow::on_sessionButton_clicked()
+{
+    switch(sessionSelection){
+        case 0:
+            sessionSelection =1;
+            ui->metRBtn->setChecked(true);
+            break;
+        case 1:
+            sessionSelection =2;
+            ui->deltaRBtn->setChecked(true);
+            ui->metRBtn->setChecked(false);
+            break;
+        case 2:
+            sessionSelection =3;
+            ui->deltaRBtn->setChecked(false);
+            ui->thetaRBtn->setChecked(true);
+            break;
+        case 3:
+            sessionSelection =4;
+            ui->alphaRBtn->setChecked(true);
+            ui->thetaRBtn->setChecked(false);
+            break;
+        case 4:
+            sessionSelection =0;
+            ui->alphaRBtn->setChecked(false);
+            return;
+    }
+}
+
+void MainWindow::on_timeButton_clicked()
+{
+    switch(timeSelection){
+        case 0:
+            timeSelection =1;
+            ui->twenty->setChecked(true);
+            break;
+        case 1:
+            timeSelection =2;
+            ui->fortyFive->setChecked(true);
+            ui->twenty->setChecked(false);
+            break;
+        case 2:
+            timeSelection =0;
+            ui->fortyFive->setChecked(false);
+            return;
+    }
+}
+
+void MainWindow::on_checkBtn_clicked()
+{
+    if (timeSelection == 0 || sessionSelection == 0 ){
+        QTextStream(stdout) << "Please select time and session type" << endl;
+        return;
+    }
+
+    int duration;
+    if (timeSelection == 1){
+        duration = 20;
+    }else{
+        duration=45;
+    }
+
+    if (ui->recordRBtn->isChecked()){
+        QTimer* therapyTimer = new QTimer(this);
+        therapyTimer->setSingleShot(1000);
+        connect(therapyTimer, &QTimer::timeout, this, &MainWindow::saveTherapy);
+        therapyTimer->start();
+    }
+
+
+}
+
+void MainWindow::saveTherapy(){
+
+    int duration;
+    if (timeSelection == 1){
+        duration = 20;
+    }else{
+        duration=45;
+    }
+
+    QString sessiontype;
+    if (sessionSelection == 1){
+        sessiontype = "Met";
+    }else if(sessionSelection == 2){
+        sessiontype ="Delta";
+    }else if(sessionSelection == 3){
+        sessiontype = "Theta";
+    }else{
+        sessiontype = "Alpha";
+    }
+
+    int intensity = 0;
+
+    Session* newSession = new Session (duration, intensity, sessiontype);
+
+    allRecords[numRecs] = new Record(newSession, "JP");
+    QString newRec = allRecords[numRecs]->format();
+    numRecs++;
+
+    QListWidgetItem *newItem = new QListWidgetItem;
+    newItem->setText(newRec);
+    ui->recordsList->insertItem(0,newItem);
+
+
 }

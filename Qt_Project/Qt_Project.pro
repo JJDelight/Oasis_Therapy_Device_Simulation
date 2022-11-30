@@ -17,7 +17,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     battery.cpp \
-    dvc.cpp \
     main.cpp \
     mainwindow.cpp \
     record.cpp \
@@ -25,7 +24,6 @@ SOURCES += \
 
 HEADERS += \
     battery.h \
-    dvc.h \
     mainwindow.h \
     record.h \
     session.h
