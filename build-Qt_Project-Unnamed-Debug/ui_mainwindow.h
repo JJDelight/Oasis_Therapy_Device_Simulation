@@ -43,7 +43,7 @@ public:
     QPushButton *sessionButton;
     QPushButton *checkBtn;
     QLabel *powerLabel;
-    QPushButton *pushButton;
+    QPushButton *rechargeBattery;
     QPushButton *timeButton;
     QCheckBox *earsRBtn;
     QGroupBox *groupBox;
@@ -56,6 +56,7 @@ public:
     QCheckBox *alphaRBtn;
     QListWidget *recordsList;
     QLabel *label_2;
+    QLabel *sessionTimerLbl;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -127,16 +128,16 @@ public:
         powerLabel->setObjectName(QString::fromUtf8("powerLabel"));
         powerLabel->setGeometry(QRect(840, 490, 54, 17));
         powerLabel->setAutoFillBackground(true);
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
-        pushButton->setGeometry(QRect(1390, 490, 111, 71));
+        rechargeBattery = new QPushButton(centralwidget);
+        rechargeBattery->setObjectName(QString::fromUtf8("rechargeBattery"));
+        rechargeBattery->setGeometry(QRect(1390, 490, 111, 71));
         timeButton = new QPushButton(centralwidget);
         timeButton->setObjectName(QString::fromUtf8("timeButton"));
         timeButton->setGeometry(QRect(220, 170, 101, 51));
         timeButton->setStyleSheet(QString::fromUtf8("border-image: url(:/Images/Images/nextButton.png);"));
         earsRBtn = new QCheckBox(centralwidget);
         earsRBtn->setObjectName(QString::fromUtf8("earsRBtn"));
-        earsRBtn->setGeometry(QRect(890, 180, 82, 23));
+        earsRBtn->setGeometry(QRect(1010, 180, 82, 23));
         earsRBtn->setAutoFillBackground(true);
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName(QString::fromUtf8("groupBox"));
@@ -186,6 +187,14 @@ public:
         label_2 = new QLabel(centralwidget);
         label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setGeometry(QRect(1310, 90, 201, 17));
+        sessionTimerLbl = new QLabel(centralwidget);
+        sessionTimerLbl->setObjectName(QString::fromUtf8("sessionTimerLbl"));
+        sessionTimerLbl->setGeometry(QRect(800, 170, 91, 51));
+        QFont font;
+        font.setPointSize(14);
+        sessionTimerLbl->setFont(font);
+        sessionTimerLbl->setAutoFillBackground(true);
+        sessionTimerLbl->setAlignment(Qt::AlignCenter);
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -219,7 +228,7 @@ public:
         sessionButton->setText(QString());
         checkBtn->setText(QString());
         powerLabel->setText(QString());
-        pushButton->setText(QApplication::translate("MainWindow", "Recharge Battery", nullptr));
+        rechargeBattery->setText(QApplication::translate("MainWindow", "Recharge Battery", nullptr));
         timeButton->setText(QString());
         earsRBtn->setText(QApplication::translate("MainWindow", "On Ears", nullptr));
         groupBox->setTitle(QString());
@@ -231,6 +240,7 @@ public:
         thetaRBtn->setText(QApplication::translate("MainWindow", "theta", nullptr));
         alphaRBtn->setText(QApplication::translate("MainWindow", "Alpha", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Saved Replays", nullptr));
+        sessionTimerLbl->setText(QApplication::translate("MainWindow", "00:00", nullptr));
     } // retranslateUi
 
 };

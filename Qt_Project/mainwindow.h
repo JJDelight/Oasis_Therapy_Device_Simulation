@@ -24,6 +24,7 @@ public:
     void delay(int seconds);// Function to delay a function for x seconds
     void displayBattery();
     void saveTherapy();
+    bool checkAll();
     
 private slots:
     void togglePower();
@@ -34,6 +35,7 @@ private slots:
     void on_timeButton_clicked();
 
     void on_checkBtn_clicked();
+    void updateCountdown();
 
 private:
     Ui::MainWindow *ui;
@@ -45,5 +47,6 @@ private:
     int sessionSelection;
     Record* allRecords[10];
     int numRecs;
+    int sessionTimer;
 };
 #endif // MAINWINDOW_H

@@ -23,9 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(batTimer, &QTimer::timeout, this, &MainWindow::displayBattery);
 //    batTimer->start();
 
+    sessionTimer = 0;
+
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
-    connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::increasePower);
+    connect(ui->rechargeBattery, &QPushButton::pressed, this, &MainWindow::increasePower);
     
 }
 
@@ -94,12 +96,10 @@ void MainWindow::softOff(){
 
 void MainWindow::togglePower(){
     if(power){
-        softOn();
         ui->powerLabel->setStyleSheet("background-color: white");
         power = !power;
         timer->stop();
     }else{
-        softOff();
         ui->powerLabel->setStyleSheet("background-color: yellow");
         power = !power;
         timer->start(20000); //Timer to turn off device if no function called (20 seconds)
@@ -108,10 +108,14 @@ void MainWindow::togglePower(){
 
 
 void MainWindow::increasePower(){
+    if (!checkAll()){
+        return;
+    }
+
     bat.setLevel(30);
-    printf("Power is %d\n", bat.getLevel());
+    QTextStream(stdout) << "Power is: " << bat.getLevel() << endl;
     bat.fullPower();
-    printf("Power is %d\n", bat.getLevel());
+    QTextStream(stdout) << "Power is: " << bat.getLevel() << endl;
 }
 
 
@@ -177,6 +181,10 @@ void MainWindow::displayBattery(){
 
 void MainWindow::on_sessionButton_clicked()
 {
+    if (!checkAll()){
+        return;
+    }
+
     switch(sessionSelection){
         case 0:
             sessionSelection =1;
@@ -200,12 +208,18 @@ void MainWindow::on_sessionButton_clicked()
         case 4:
             sessionSelection =0;
             ui->alphaRBtn->setChecked(false);
-            return;
+            break;
     }
+
+    timer->start();
 }
 
 void MainWindow::on_timeButton_clicked()
 {
+    if (!checkAll()){
+        return;
+    }
+
     switch(timeSelection){
         case 0:
             timeSelection =1;
@@ -219,12 +233,17 @@ void MainWindow::on_timeButton_clicked()
         case 2:
             timeSelection =0;
             ui->fortyFive->setChecked(false);
-            return;
+            break;
     }
+    timer->start();
 }
 
 void MainWindow::on_checkBtn_clicked()
 {
+    if (!checkAll()){
+        return;
+    }
+
     if (timeSelection == 0 || sessionSelection == 0 ){
         QTextStream(stdout) << "Please select time and session type" << endl;
         return;
@@ -236,14 +255,34 @@ void MainWindow::on_checkBtn_clicked()
     }else{
         duration=45;
     }
+    sessionTimer = duration * 60;
 
-    if (ui->recordRBtn->isChecked()){
-        QTimer* therapyTimer = new QTimer(this);
-        therapyTimer->setSingleShot(1000);
-        connect(therapyTimer, &QTimer::timeout, this, &MainWindow::saveTherapy);
-        therapyTimer->start();
+    QTimer* therapyTimer = new QTimer(this);
+    therapyTimer->setInterval(1000);
+    connect(therapyTimer, &QTimer::timeout, this, &MainWindow::updateCountdown);
+    therapyTimer->start();
+
+    timer->start();
+
+}
+
+void MainWindow::updateCountdown(){
+    if(sessionTimer == 0 && ui->recordRBtn->isChecked()){
+        saveTherapy();
+        return;
     }
 
+    int minutes = sessionTimer / 60;
+    int seconds = (sessionTimer % 60);
+
+//    QTextStream(stdout) << sessionTimer << " -- " << minutes << " : " << seconds << endl;
+
+    QString m = (QString::number(minutes)).length() < 2 ? QString("0%1").arg(QString::number(minutes)) : QString::number(minutes);
+    QString s = (QString::number(seconds)).length() < 2 ? QString("0%1").arg(QString::number(seconds)) : QString::number(seconds);
+
+    QString time = QString("%1 : %4").arg(m).arg(s);
+    ui->sessionTimerLbl->setText(time);
+    sessionTimer--;
 
 }
 
@@ -280,4 +319,11 @@ void MainWindow::saveTherapy(){
     ui->recordsList->insertItem(0,newItem);
 
 
+}
+
+
+bool MainWindow::checkAll(){
+    //check to see if the power is on (by checking the timer object
+    timer->stop();
+    return power;
 }
