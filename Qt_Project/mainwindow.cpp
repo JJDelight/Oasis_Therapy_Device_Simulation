@@ -13,22 +13,24 @@ MainWindow::MainWindow(QWidget *parent)
     timeSelection = 0;
     sessionSelection = 0;
     numRecs = 0;
+    intensity = 0;
 
     timer = new QTimer(this);
     timer->setSingleShot(true);
     connect(timer, &QTimer::timeout, this, &MainWindow::togglePower);
 
     batTimer = new QTimer(this);    //Interval of time for battery to display
-    batTimer->setInterval(12000);
+    batTimer->setInterval(30000);
     connect(batTimer, &QTimer::timeout, this, &MainWindow::displayBattery);
-//    batTimer->start();
+    batTimer->start();
 
     sessionTimer = 0;
 
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
     connect(ui->rechargeBattery, &QPushButton::pressed, this, &MainWindow::increasePower);
-    
+    connect(ui->increaseBtn, &QPushButton::pressed, this, [this](){ emit MainWindow::toggleIntensity(true);});
+    connect(ui->decreaseBtn, &QPushButton::pressed, this, [this](){ emit MainWindow::toggleIntensity(false);});
 }
 
 MainWindow::~MainWindow(){
@@ -128,6 +130,8 @@ void MainWindow::delay(int secs){
 }
 
 void MainWindow::displayBattery(){
+    batTimer->stop();
+    batTimer->start(30000);
     int div = bat.getLevel() / 125;
     bat.setLevel(bat.getLevel() - 25);
     QTextStream(stdout) << "div: " << div << endl;
@@ -306,8 +310,6 @@ void MainWindow::saveTherapy(){
         sessiontype = "Alpha";
     }
 
-    int intensity = 0;
-
     Session* newSession = new Session (duration, intensity, sessiontype);
 
     allRecords[numRecs] = new Record(newSession, "JP");
@@ -326,4 +328,52 @@ bool MainWindow::checkAll(){
     //check to see if the power is on (by checking the timer object
     timer->stop();
     return power;
+}
+
+void MainWindow::toggleIntensity(bool choice){
+    if(!checkAll()){return;}
+
+    int batTimerLeft = batTimer->remainingTime();
+    batTimer->stop();
+
+    if(choice){
+        if(intensity < 8){
+            intensity++;
+        }
+    }else{
+        if(intensity > 1){
+            intensity--;
+        }
+    }
+
+    switch(intensity){
+        case 8:
+            ui->lightEight->setStyleSheet("background-color: red");
+        case 7:
+            ui->lightSeven->setStyleSheet("background-color: red");
+        case 6:
+            ui->lightSix->setStyleSheet("background-color: yellow");
+        case 5:
+            ui->lightFive->setStyleSheet("background-color: yellow");
+        case 4:
+            ui->lightFour->setStyleSheet("background-color: yellow");
+        case 3:
+            ui->lightThree->setStyleSheet("background-color: green");
+        case 2:
+            ui->lightTwo->setStyleSheet("background-color: green");
+        case 1:
+            ui->lightOne->setStyleSheet("background-color: green");
+    }
+    delay(1);
+
+    ui->lightEight->setStyleSheet("background-color: white");
+    ui->lightSeven->setStyleSheet("background-color: white");
+    ui->lightSix->setStyleSheet("background-color: white");
+    ui->lightFive->setStyleSheet("background-color: white");
+    ui->lightFour->setStyleSheet("background-color: white");
+    ui->lightThree->setStyleSheet("background-color: white");
+    ui->lightTwo->setStyleSheet("background-color: white");
+    ui->lightOne->setStyleSheet("background-color: white");
+
+    batTimer->start(batTimerLeft);
 }

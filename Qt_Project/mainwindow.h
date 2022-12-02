@@ -36,6 +36,7 @@ private slots:
 
     void on_checkBtn_clicked();
     void updateCountdown();
+    void toggleIntensity(bool);
 
 private:
     Ui::MainWindow *ui;
@@ -48,5 +49,6 @@ private:
     Record* allRecords[10];
     int numRecs;
     int sessionTimer;
+    int intensity;
 };
 #endif // MAINWINDOW_H
