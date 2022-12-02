@@ -25,6 +25,7 @@ public:
     void displayBattery();
     void saveTherapy();
     bool checkAll();
+    void updateTherapy();
     
 private slots:
     void togglePower();
@@ -37,6 +38,9 @@ private slots:
     void on_checkBtn_clicked();
     void updateCountdown();
     void toggleIntensity(bool);
+    void on_userButton_clicked();
+    void on_replay_clicked();
+
 
 private:
     Ui::MainWindow *ui;
@@ -46,6 +50,7 @@ private:
     Battery bat;
     int timeSelection;
     int sessionSelection;
+    int userSelection;
     Record* allRecords[10];
     int numRecs;
     int sessionTimer;

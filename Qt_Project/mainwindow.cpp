@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     bat = Battery();
     timeSelection = 0;
     sessionSelection = 0;
+    userSelection = 0;
     numRecs = 0;
     intensity = 0;
 
@@ -248,7 +249,7 @@ void MainWindow::on_checkBtn_clicked()
         return;
     }
 
-    if (timeSelection == 0 || sessionSelection == 0 ){
+    if (timeSelection == 0 || sessionSelection == 0 || userSelection == 0){
         QTextStream(stdout) << "Please select time and session type" << endl;
         return;
     }
@@ -271,15 +272,16 @@ void MainWindow::on_checkBtn_clicked()
 }
 
 void MainWindow::updateCountdown(){
+    if(sessionTimer < 0 ){
+        return;
+    }
+
     if(sessionTimer == 0 && ui->recordRBtn->isChecked()){
         saveTherapy();
-        return;
     }
 
     int minutes = sessionTimer / 60;
     int seconds = (sessionTimer % 60);
-
-//    QTextStream(stdout) << sessionTimer << " -- " << minutes << " : " << seconds << endl;
 
     QString m = (QString::number(minutes)).length() < 2 ? QString("0%1").arg(QString::number(minutes)) : QString::number(minutes);
     QString s = (QString::number(seconds)).length() < 2 ? QString("0%1").arg(QString::number(seconds)) : QString::number(seconds);
@@ -311,14 +313,20 @@ void MainWindow::saveTherapy(){
     }
 
     Session* newSession = new Session (duration, intensity, sessiontype);
+    QString selected;
+    if (userSelection == 1){
+        selected = "User1";
+    }else if (userSelection == 2){
+        selected = "User2";
+    }else{
+        selected = "User3";
+    }
 
-    allRecords[numRecs] = new Record(newSession, "JP");
-    QString newRec = allRecords[numRecs]->format();
+    allRecords[numRecs] = new Record(newSession, selected);
+
     numRecs++;
 
-    QListWidgetItem *newItem = new QListWidgetItem;
-    newItem->setText(newRec);
-    ui->recordsList->insertItem(0,newItem);
+    updateTherapy();
 
 
 }
@@ -376,4 +384,70 @@ void MainWindow::toggleIntensity(bool choice){
     ui->lightOne->setStyleSheet("background-color: white");
 
     batTimer->start(batTimerLeft);
+}
+
+void MainWindow::on_userButton_clicked()
+{
+    if (!checkAll()){
+        return;
+    }
+
+    switch(userSelection){
+        case 0:
+            userSelection =1;
+            ui->userOne->setChecked(true);
+            break;
+        case 1:
+            userSelection =2;
+            ui->userTwo->setChecked(true);
+            ui->userOne->setChecked(false);
+            break;
+        case 2:
+            userSelection =3;
+            ui->userThree->setChecked(true);
+            ui->userTwo->setChecked(false);
+            break;
+        case 3:
+            userSelection =1;
+            ui->userOne->setChecked(true);
+            ui->userThree->setChecked(false);
+            break;
+    }
+    updateTherapy();
+    timer->start();
+}
+
+void MainWindow::updateTherapy(){
+    if (numRecs == 0){return;}
+    ui->recordsList->clear();
+
+    QString selected;
+    if (userSelection == 1){
+        selected = "User1";
+    }else if (userSelection == 2){
+        selected = "User2";
+    }else{
+        selected = "User3";
+    }
+
+    for (int i = 0; i < numRecs; i++) {
+        QString currRec = QString("%1 -- %2").arg(i).arg(allRecords[i]->format());
+        if (selected == allRecords[i]->getUser()){
+            QListWidgetItem *newItem = new QListWidgetItem;
+            newItem->setText(currRec);
+            ui->recordsList->insertItem(0,newItem);
+        }
+
+    }
+
+
+}
+
+void MainWindow::on_replay_clicked()
+{
+    int index = ui->recordsList->currentItem()->text().at(0).digitValue();
+    Record* currRec = allRecords[index];
+    //use getters to get information about the record and call the
+    sessionTimer = 30;
+    return;
 }
