@@ -24,6 +24,7 @@ public:
     void delay(int seconds);// Function to delay a function for x seconds
     void displayBattery();
     void saveTherapy();
+    int getCustomTime();
     
 private slots:
     void togglePower();
