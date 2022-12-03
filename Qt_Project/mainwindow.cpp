@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::increasePower);
-    
+
 }
 
 MainWindow::~MainWindow(){
@@ -90,6 +90,12 @@ void MainWindow::softOff(){
     ui->lightOne->setStyleSheet("background-color: green");
     delay(1);
     ui->lightOne->setStyleSheet("background-color: white");
+}
+
+int MainWindow::getCustomTime(){
+    QString custom = ui->customTime->toPlainText();
+    int duration = custom.toInt();
+    return duration;
 }
 
 void MainWindow::togglePower(){
@@ -210,6 +216,7 @@ void MainWindow::on_timeButton_clicked()
         case 0:
             timeSelection =1;
             ui->twenty->setChecked(true);
+            ui->fortyFive->setChecked(false);
             break;
         case 1:
             timeSelection =2;
@@ -219,23 +226,31 @@ void MainWindow::on_timeButton_clicked()
         case 2:
             timeSelection =0;
             ui->fortyFive->setChecked(false);
+            ui->twenty->setChecked(false);
             return;
     }
 }
 
 void MainWindow::on_checkBtn_clicked()
 {
-    if (timeSelection == 0 || sessionSelection == 0 ){
-        QTextStream(stdout) << "Please select time and session type" << endl;
-        return;
+    if(getCustomTime() == 0){
+        if (timeSelection == 0 || sessionSelection == 0 ){
+            QTextStream(stdout) << "Please select time and session type" << endl;
+            return;
+        }
+    }
+    int duration;
+    if(getCustomTime() == 0){
+        if (timeSelection == 1){
+            duration = 20;
+        }else{
+            duration=45;
+        }
+    }
+    else {
+        duration = getCustomTime();
     }
 
-    int duration;
-    if (timeSelection == 1){
-        duration = 20;
-    }else{
-        duration=45;
-    }
 
     if (ui->recordRBtn->isChecked()){
         QTimer* therapyTimer = new QTimer(this);
@@ -243,8 +258,6 @@ void MainWindow::on_checkBtn_clicked()
         connect(therapyTimer, &QTimer::timeout, this, &MainWindow::saveTherapy);
         therapyTimer->start();
     }
-
-
 }
 
 void MainWindow::saveTherapy(){
@@ -278,6 +291,4 @@ void MainWindow::saveTherapy(){
     QListWidgetItem *newItem = new QListWidgetItem;
     newItem->setText(newRec);
     ui->recordsList->insertItem(0,newItem);
-
-
 }
