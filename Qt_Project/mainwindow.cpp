@@ -221,7 +221,7 @@ void MainWindow::on_timeButton_clicked()
         case 1:
             timeSelection =2;
             ui->fortyFive->setChecked(true);
-            ui->twenty->setChecked(false);
+            ui->twenty->setChecked(false);  
             break;
         case 2:
             timeSelection =0;
