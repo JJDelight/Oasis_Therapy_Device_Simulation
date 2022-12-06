@@ -266,10 +266,15 @@ void MainWindow::on_timeButton_clicked()
             ui->twenty->setChecked(false);  
             break;
         case 2:
-            timeSelection =1;
+            timeSelection =3;
+            ui->custom->setChecked(true);
             ui->fortyFive->setChecked(false);
-            ui->twenty->setChecked(false);
-            return;
+            break;
+        case 3:
+            timeSelection = 1;
+            ui->custom->setChecked(false);
+            ui->twenty->setChecked(true);
+            break;
     }
     timer->start();
 }
@@ -281,23 +286,19 @@ void MainWindow::on_checkBtn_clicked()
         return;
     }
     int duration;
-    if(getCustomTime() == 0){
-        if (timeSelection == 1){
-            duration = 20;
-        }else{
-            duration=45;
-        }
-    }
-    else {
+    if (timeSelection == 1){
+        duration = 20;
+    }else if (timeSelection == 2){
+        duration=45;
+    }else if (timeSelection == 3){
         duration = getCustomTime();
-
-    if(duration == 0){
-        if (timeSelection == 0 || sessionSelection == 0|| userSelection == 0){
-            QTextStream(stdout) << "Please select time and session type" << endl;
-            return;
-            }
-        }
     }
+
+    if (timeSelection == 0 || sessionSelection == 0|| userSelection == 0){
+        QTextStream(stdout) << "Please select time and session type" << endl;
+        return;
+    }
+
     sessionTimer = duration * 60;
 
     delay(4);   //Delaying for 5 seconds as manual requirements
