@@ -103,6 +103,13 @@ void MainWindow::softOff(){
 
 //Handles the power button functionality
 void MainWindow::togglePower(){
+    //Ending a Session when power button clicked during session
+    if(sessionTimer >= 0){
+        sessionTimer = -1;
+        ui->sessionTimerLbl->setText("00:00");
+        return;
+    }
+
     if(power){
         ui->powerLabel->setStyleSheet("background-color: white");
         power = !power;
@@ -110,7 +117,7 @@ void MainWindow::togglePower(){
     }else{
         ui->powerLabel->setStyleSheet("background-color: yellow");
         power = !power;
-        timer->start(20000); //Timer to turn off device if no function called (20 seconds)
+        timer->start(120000); //Timer to turn off device if no function called (20 minutes)
     }
 }
 
@@ -304,7 +311,6 @@ void MainWindow::updateCountdown(){
         drainBattery();
     }
     sessionTimer--;
-
 }
 
 void MainWindow::drainBattery(){
