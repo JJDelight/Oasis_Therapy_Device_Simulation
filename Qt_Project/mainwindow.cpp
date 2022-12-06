@@ -33,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
+    connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::increasePower);
+
     connect(ui->rechargeBattery, &QPushButton::pressed, this, &MainWindow::increasePower);
     connect(ui->increaseBtn, &QPushButton::pressed, this, [this](){ emit MainWindow::toggleIntensity(true);});
     connect(ui->decreaseBtn, &QPushButton::pressed, this, [this](){ emit MainWindow::toggleIntensity(false);});
@@ -99,6 +101,12 @@ void MainWindow::softOff(){
     ui->lightOne->setStyleSheet("background-color: green");
     delay(1);
     ui->lightOne->setStyleSheet("background-color: white");
+}
+
+int MainWindow::getCustomTime(){
+    QString custom = ui->customTime->toPlainText();
+    int duration = custom.toInt();
+    return duration;
 }
 
 //Handles the power button functionality
@@ -250,17 +258,18 @@ void MainWindow::on_timeButton_clicked()
         case 0:
             timeSelection =1;
             ui->twenty->setChecked(true);
+            ui->fortyFive->setChecked(false);
             break;
         case 1:
             timeSelection =2;
             ui->fortyFive->setChecked(true);
-            ui->twenty->setChecked(false);
+            ui->twenty->setChecked(false);  
             break;
         case 2:
             timeSelection =1;
             ui->fortyFive->setChecked(false);
-            ui->twenty->setChecked(true);
-            break;
+            ui->twenty->setChecked(false);
+            return;
     }
     timer->start();
 }
@@ -271,17 +280,23 @@ void MainWindow::on_checkBtn_clicked()
     if (!checkAll()){
         return;
     }
-
-    if (timeSelection == 0 || sessionSelection == 0 || userSelection == 0){
-        QTextStream(stdout) << "Please select a time, a session type, and a user profile" << endl;
-        return;
-    }
-
     int duration;
-    if (timeSelection == 1){
-        duration = 20;
-    }else{
-        duration=45;
+    if(getCustomTime() == 0){
+        if (timeSelection == 1){
+            duration = 20;
+        }else{
+            duration=45;
+        }
+    }
+    else {
+        duration = getCustomTime();
+
+    if(duration == 0){
+        if (timeSelection == 0 || sessionSelection == 0|| userSelection == 0){
+            QTextStream(stdout) << "Please select time and session type" << endl;
+            return;
+            }
+        }
     }
     sessionTimer = duration * 60;
 
