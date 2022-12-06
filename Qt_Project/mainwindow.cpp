@@ -113,8 +113,17 @@ int MainWindow::getCustomTime(){
 void MainWindow::togglePower(){
     //Ending a Session when power button clicked during session
     if(sessionTimer >= 0){
+        timer->stop();
+        int batTimerLeft = batTimer->remainingTime();
+        batTimer->stop();   //Pauses the battery timer, so the battery level is not displayed during this process
+
+
         sessionTimer = -1;
         ui->sessionTimerLbl->setText("00:00");
+        softOff();
+
+        timer->start();
+        batTimer->start(batTimerLeft);
         return;
     }
 
@@ -126,6 +135,7 @@ void MainWindow::togglePower(){
         ui->powerLabel->setStyleSheet("background-color: yellow");
         power = !power;
         timer->start(120000); //Timer to turn off device if no function called (20 minutes)
+        displayBattery();
     }
 }
 
@@ -290,6 +300,7 @@ void MainWindow::on_checkBtn_clicked()
     }
     sessionTimer = duration * 60;
 
+    delay(4);   //Delaying for 5 seconds as manual requirements
     //Starts a timer for the therapy which handles the Timer in the UI and updating it by calling a function every second
     QTimer* therapyTimer = new QTimer(this);
     therapyTimer->setInterval(1000);
