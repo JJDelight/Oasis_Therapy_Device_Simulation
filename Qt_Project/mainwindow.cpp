@@ -117,6 +117,11 @@ void MainWindow::togglePower(){
         int batTimerLeft = batTimer->remainingTime();
         batTimer->stop();   //Pauses the battery timer, so the battery level is not displayed during this process
 
+        if(ui->recordRBtn->isChecked()){
+        saveTherapy();
+        timer->start();
+        }
+
 
         sessionTimer = -1;
         ui->sessionTimerLbl->setText("00:00");
@@ -156,9 +161,6 @@ void MainWindow::delay(int secs){
 void MainWindow::displayBattery(){
     if(!power){return;}
 
-    if(sessionTimer<=0){
-        drainBattery();
-    }
     batTimer->stop();
     batTimer->start(30000);
     int div = bat.getLevel() / 125;
@@ -179,6 +181,9 @@ void MainWindow::displayBattery(){
             ui->lightThree->setStyleSheet("background-color: green");
             ui->lightTwo->setStyleSheet("background-color: green");
             ui->lightOne->setStyleSheet("background-color: green");
+            if(sessionTimer<=0){
+                drainBattery();
+            }
             break;
         case 2:
             for(int i=0; i<2; i++){
@@ -189,6 +194,9 @@ void MainWindow::displayBattery(){
                 ui->lightOne->setStyleSheet("background-color: white");
                 delay(1);
             }
+            if(sessionTimer<=0){
+                drainBattery();
+            }  
             return;
         case 1:
             for(int i=0; i<2; i++){
@@ -197,9 +205,12 @@ void MainWindow::displayBattery(){
                 ui->lightOne->setStyleSheet("background-color: white");
                 delay(1);
             }
+            if(sessionTimer<=0 && div!=2){
+                drainBattery();
+            }
             return;
     }
-    delay(1);
+    delay(5);
 
     ui->lightEight->setStyleSheet("background-color: white");
     ui->lightSeven->setStyleSheet("background-color: white");
@@ -444,6 +455,7 @@ void MainWindow::toggleIntensity(bool choice){
     ui->lightOne->setStyleSheet("background-color: white");
 
     batTimer->start(batTimerLeft);
+    timer->start();
 }
 
 //Function to handle switching the selected user once the "next" button is clicked
@@ -501,8 +513,6 @@ void MainWindow::updateTherapy(){
         }
 
     }
-
-
 }
 
 //Handles the functionality to play a Therapy once a replay is selected and "Replay Therapy" is pressed
@@ -512,13 +522,15 @@ void MainWindow::on_replay_clicked(){
         QTextStream(stdout) << "Please select a recording from Saved Replays" << endl;
         return;
     }
+
+    softOn();
     
     int index = ui->recordsList->currentItem()->text().at(0).digitValue();
     Record* currRec = allRecords[index];
     Session* currSes = currRec->getSession();
 
     //use getters to get information about the record and call the
-    sessionTimer = currSes->getDuration();
+    sessionTimer = currSes->getDuration() * 60;
     intensity = currSes->getIntensity();
     QString repType = currSes->getSessionType();
 
