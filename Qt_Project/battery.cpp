@@ -16,6 +16,7 @@ int Battery::getLevel(){
     return level;
 }
 
+//Restores the battery to full power
 void Battery::fullPower(){
     level = 1000;
 }

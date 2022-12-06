@@ -24,7 +24,8 @@ QString Record::getUser(){return username;}
 
 //void Record::setIntensity(int intensity){intensityLevel = intensity;}
 
-QString Record::format(){
+//Formats the saved session information to be displayed in the saved replays
+QString Record::format(){ 
     QString d = QString::number(sesh->getDuration());
     QString i = QString::number(sesh->getIntensity());
     QString s = sesh->getSessionType();
