@@ -8,24 +8,28 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    power = false;
-    bat = Battery();
-    timeSelection = 0;
-    sessionSelection = 0;
-    userSelection = 0;
-    numRecs = 0;
-    intensity = 1;
 
+    power = false;  //Power On/Off State
+    bat = Battery();
+
+    timeSelection = 0;  //Variable to keep track of current time option selected for starting a session
+    sessionSelection = 0;  //Variable to keep tract of current session type selected for starting a session
+    userSelection = 0;  //Variable to keep track of current user option selected for starting a session
+    
+    sessionTimer = -1;   //Keeps track of duration for the current session
+    numRecs = 0;    //Number of recordings saved by all users
+    intensity = 1;  //Intensity of the therapy
+
+    //Timer tracking inactivity, asides from going through a session, and turning off the power
     timer = new QTimer(this);
     timer->setSingleShot(true);
     connect(timer, &QTimer::timeout, this, &MainWindow::togglePower);
 
-    batTimer = new QTimer(this);    //Interval of time for battery to display
+    //Battery Timer that displays the battery level each time at a set interval
+    batTimer = new QTimer(this);
     batTimer->setInterval(30000);
     connect(batTimer, &QTimer::timeout, this, &MainWindow::displayBattery);
     batTimer->start();
-
-    sessionTimer = 0;
 
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
@@ -97,11 +101,12 @@ void MainWindow::softOff(){
     ui->lightOne->setStyleSheet("background-color: white");
 }
 
+//Handles the power button functionality
 void MainWindow::togglePower(){
     if(power){
         ui->powerLabel->setStyleSheet("background-color: white");
         power = !power;
-        timer->stop();
+        timer->stop();  //Stop the inactivity timer when the device is turned off
     }else{
         ui->powerLabel->setStyleSheet("background-color: yellow");
         power = !power;
@@ -134,6 +139,7 @@ void MainWindow::displayBattery(){
     int div = bat.getLevel() / 125;
     QTextStream(stdout) << "div: " << div << "Battery %: "<< bat.getLevel() << endl;
 
+    //Handles how many Battery indicators to light up, or flash as in case 1-2
     switch(div){
         case 8:
             ui->lightEight->setStyleSheet("background-color: red");
@@ -181,6 +187,7 @@ void MainWindow::displayBattery(){
     ui->lightOne->setStyleSheet("background-color: white");
 }
 
+//Function to handle switching the selected session once the "next" button is clicked
 void MainWindow::on_sessionButton_clicked()
 {
     if (!checkAll()){
@@ -216,6 +223,7 @@ void MainWindow::on_sessionButton_clicked()
     timer->start();
 }
 
+//Function to handle switching the selected time once the "next" button is clicked
 void MainWindow::on_timeButton_clicked()
 {
     if (!checkAll()){
@@ -241,6 +249,7 @@ void MainWindow::on_timeButton_clicked()
     timer->start();
 }
 
+//Function to start a session once the pre-requisites are met
 void MainWindow::on_checkBtn_clicked()
 {
     if (!checkAll()){
@@ -248,7 +257,7 @@ void MainWindow::on_checkBtn_clicked()
     }
 
     if (timeSelection == 0 || sessionSelection == 0 || userSelection == 0){
-        QTextStream(stdout) << "Please select time and session type" << endl;
+        QTextStream(stdout) << "Please select a time, a session type, and a user profile" << endl;
         return;
     }
 
@@ -260,12 +269,14 @@ void MainWindow::on_checkBtn_clicked()
     }
     sessionTimer = duration * 60;
 
+    //Starts a timer for the therapy which handles the Timer in the UI and updating it by calling a function every second
     QTimer* therapyTimer = new QTimer(this);
     therapyTimer->setInterval(1000);
     connect(therapyTimer, &QTimer::timeout, this, &MainWindow::updateCountdown);
     therapyTimer->start();
 
 }
+
 
 void MainWindow::updateCountdown(){
     if(sessionTimer < 0 ){
@@ -281,9 +292,11 @@ void MainWindow::updateCountdown(){
     int minutes = sessionTimer / 60;
     int seconds = (sessionTimer % 60);
 
+    //Formats the minutes/seconds to display with a padded "0" if necessary
     QString m = (QString::number(minutes)).length() < 2 ? QString("0%1").arg(QString::number(minutes)) : QString::number(minutes);
     QString s = (QString::number(seconds)).length() < 2 ? QString("0%1").arg(QString::number(seconds)) : QString::number(seconds);
 
+    //Displays timer of session in UI
     QString time = QString("%1 : %4").arg(m).arg(s);
     ui->sessionTimerLbl->setText(time);
 
@@ -336,27 +349,23 @@ void MainWindow::saveTherapy(){
         selected = "User3";
     }
 
-    allRecords[numRecs] = new Record(newSession, selected);
-
-    numRecs++;
+    allRecords[numRecs++] = new Record(newSession, selected);
 
     updateTherapy();
-
-
 }
 
-
+//Function is used as a checker in other functions if the power is on and stops the inactivity timer
 bool MainWindow::checkAll(){
-    //check to see if the power is on (by checking the timer object
     timer->stop();
     return power;
 }
 
+//Handles the Up/Down arrow for the intensity and displays the level using the number indicators
 void MainWindow::toggleIntensity(bool choice){
     if(!checkAll()){return;}
 
     int batTimerLeft = batTimer->remainingTime();
-    batTimer->stop();
+    batTimer->stop();   //Pauses the battery timer, so the battery level is not displayed during this process
 
     if(choice){
         if(intensity < 8){
@@ -400,6 +409,7 @@ void MainWindow::toggleIntensity(bool choice){
     batTimer->start(batTimerLeft);
 }
 
+//Function to handle switching the selected user once the "next" button is clicked
 void MainWindow::on_userButton_clicked()
 {
     if (!checkAll()){
@@ -431,6 +441,7 @@ void MainWindow::on_userButton_clicked()
     timer->start();
 }
 
+//Updates the Saved Replays box, based on the selected User
 void MainWindow::updateTherapy(){
     if (numRecs == 0){return;}
     ui->recordsList->clear();
@@ -457,12 +468,19 @@ void MainWindow::updateTherapy(){
 
 }
 
-void MainWindow::on_replay_clicked()
-{
-    if(!ui->recordsList->currentItem()){return;}
+//Handles the functionality to play a Therapy once a replay is selected and "Replay Therapy" is pressed
+void MainWindow::on_replay_clicked(){
+
+    if(ui->recordsList->currentItem() == NULL){
+        QTextStream(stdout) << "Please select a recording from Saved Replays" << endl;
+        return;
+    }
+    
     int index = ui->recordsList->currentItem()->text().at(0).digitValue();
     Record* currRec = allRecords[index];
+    
     //use getters to get information about the record and call the
     sessionTimer = 30;
     return;
+    
 }
