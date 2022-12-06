@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     sessionSelection = 0;
     userSelection = 0;
     numRecs = 0;
-    intensity = 0;
+    intensity = 1;
 
     timer = new QTimer(this);
     timer->setSingleShot(true);
@@ -114,16 +114,9 @@ void MainWindow::increasePower(){
     if (!checkAll()){
         return;
     }
-
-    bat.setLevel(30);
-    QTextStream(stdout) << "Power is: " << bat.getLevel() << endl;
     bat.fullPower();
-    QTextStream(stdout) << "Power is: " << bat.getLevel() << endl;
 }
 
-
-//Online Code to make code freeze and not GUI
-// https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
 void MainWindow::delay(int secs){
     QTime dieTime = QTime::currentTime().addSecs(secs);
     while (QTime::currentTime() < dieTime)
@@ -131,11 +124,15 @@ void MainWindow::delay(int secs){
 }
 
 void MainWindow::displayBattery(){
+    if(!power){return;}
+
+    if(sessionTimer<=0){
+        drainBattery();
+    }
     batTimer->stop();
     batTimer->start(30000);
     int div = bat.getLevel() / 125;
-    bat.setLevel(bat.getLevel() - 25);
-    QTextStream(stdout) << "div: " << div << endl;
+    QTextStream(stdout) << "div: " << div << "Battery %: "<< bat.getLevel() << endl;
 
     switch(div){
         case 8:
@@ -154,7 +151,7 @@ void MainWindow::displayBattery(){
             ui->lightOne->setStyleSheet("background-color: green");
             break;
         case 2:
-            for(int i=0; i<10; i++){
+            for(int i=0; i<2; i++){
                 ui->lightTwo->setStyleSheet("background-color: green");
                 ui->lightOne->setStyleSheet("background-color: green");
                 delay(1);
@@ -164,7 +161,7 @@ void MainWindow::displayBattery(){
             }
             return;
         case 1:
-            for(int i=0; i<10; i++){
+            for(int i=0; i<2; i++){
                 ui->lightOne->setStyleSheet("background-color: green");
                 delay(1);
                 ui->lightOne->setStyleSheet("background-color: white");
@@ -172,7 +169,7 @@ void MainWindow::displayBattery(){
             }
             return;
     }
-    delay(5);
+    delay(1);
 
     ui->lightEight->setStyleSheet("background-color: white");
     ui->lightSeven->setStyleSheet("background-color: white");
@@ -211,11 +208,11 @@ void MainWindow::on_sessionButton_clicked()
             ui->thetaRBtn->setChecked(false);
             break;
         case 4:
-            sessionSelection =0;
+            sessionSelection =1;
             ui->alphaRBtn->setChecked(false);
+            ui->metRBtn->setChecked(true);
             break;
     }
-
     timer->start();
 }
 
@@ -236,8 +233,9 @@ void MainWindow::on_timeButton_clicked()
             ui->twenty->setChecked(false);
             break;
         case 2:
-            timeSelection =0;
+            timeSelection =1;
             ui->fortyFive->setChecked(false);
+            ui->twenty->setChecked(true);
             break;
     }
     timer->start();
@@ -267,17 +265,17 @@ void MainWindow::on_checkBtn_clicked()
     connect(therapyTimer, &QTimer::timeout, this, &MainWindow::updateCountdown);
     therapyTimer->start();
 
-    timer->start();
-
 }
 
 void MainWindow::updateCountdown(){
     if(sessionTimer < 0 ){
+        drainBattery();
         return;
     }
 
     if(sessionTimer == 0 && ui->recordRBtn->isChecked()){
         saveTherapy();
+        timer->start();
     }
 
     int minutes = sessionTimer / 60;
@@ -288,8 +286,24 @@ void MainWindow::updateCountdown(){
 
     QString time = QString("%1 : %4").arg(m).arg(s);
     ui->sessionTimerLbl->setText(time);
+
+    if(sessionTimer%40==0){
+        drainBattery();
+    }
     sessionTimer--;
 
+}
+
+void MainWindow::drainBattery(){
+    if(!power){return;}
+    int currLevel = bat.getLevel();
+    int usage = 2;
+    if (sessionTimer > 0){
+         usage += intensity + sessionSelection;
+    }
+
+    int newLevel = currLevel - usage;
+    bat.setLevel(newLevel);
 }
 
 void MainWindow::saveTherapy(){
@@ -445,6 +459,7 @@ void MainWindow::updateTherapy(){
 
 void MainWindow::on_replay_clicked()
 {
+    if(!ui->recordsList->currentItem()){return;}
     int index = ui->recordsList->currentItem()->text().at(0).digitValue();
     Record* currRec = allRecords[index];
     //use getters to get information about the record and call the

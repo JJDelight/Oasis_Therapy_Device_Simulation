@@ -40,6 +40,7 @@ private slots:
     void toggleIntensity(bool);
     void on_userButton_clicked();
     void on_replay_clicked();
+    void drainBattery();
 
 
 private:
