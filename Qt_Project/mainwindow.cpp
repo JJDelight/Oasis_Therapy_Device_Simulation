@@ -284,6 +284,11 @@ void MainWindow::updateCountdown(){
         return;
     }
 
+    if(!(ui->earsRBtn->isChecked())){
+        QTextStream(stdout) << "Please reconnect the electrodes to your ears" << endl;
+        return;
+    }
+
     if(sessionTimer == 0 && ui->recordRBtn->isChecked()){
         saveTherapy();
         timer->start();
