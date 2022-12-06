@@ -233,12 +233,6 @@ void MainWindow::on_timeButton_clicked()
 
 void MainWindow::on_checkBtn_clicked()
 {
-    if(getCustomTime() == 0){
-        if (timeSelection == 0 || sessionSelection == 0 ){
-            QTextStream(stdout) << "Please select time and session type" << endl;
-            return;
-        }
-    }
     int duration;
     if(getCustomTime() == 0){
         if (timeSelection == 1){
@@ -251,6 +245,12 @@ void MainWindow::on_checkBtn_clicked()
         duration = getCustomTime();
     }
 
+    if(duration == 0){
+        if (timeSelection == 0 || sessionSelection == 0){
+            QTextStream(stdout) << "Please select time and session type" << endl;
+            return;
+        }
+    }
 
     if (ui->recordRBtn->isChecked()){
         QTimer* therapyTimer = new QTimer(this);
