@@ -29,6 +29,6 @@ QString Record::format(){
     QString d = QString::number(sesh->getDuration());
     QString i = QString::number(sesh->getIntensity());
     QString s = sesh->getSessionType();
-    QString rec = QString("Duration: %1; intensity: %2; Session Stype: %3; User: %4").arg(d).arg(i).arg(s).arg(username);
+    QString rec = QString("Duration: %1; Intensity: %2; Session Type: %3; User: %4").arg(d).arg(i).arg(s).arg(username);
     return rec;
 }
