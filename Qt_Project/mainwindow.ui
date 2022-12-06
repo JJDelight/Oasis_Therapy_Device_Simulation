@@ -384,6 +384,32 @@
       <string>0</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="custom">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>40</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>20min</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <zorder>custom</zorder>
+    <zorder>twenty</zorder>
+    <zorder>fortyFive</zorder>
+    <zorder>customTime</zorder>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
