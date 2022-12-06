@@ -305,6 +305,9 @@
     <property name="text">
      <string>On Ears</string>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
