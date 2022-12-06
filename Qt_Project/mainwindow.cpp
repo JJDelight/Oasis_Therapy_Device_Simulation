@@ -137,7 +137,6 @@ void MainWindow::displayBattery(){
     batTimer->stop();
     batTimer->start(30000);
     int div = bat.getLevel() / 125;
-    QTextStream(stdout) << "div: " << div << "Battery %: "<< bat.getLevel() << endl;
 
     //Handles how many Battery indicators to light up, or flash as in case 1-2
     switch(div){
