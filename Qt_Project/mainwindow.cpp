@@ -503,9 +503,22 @@ void MainWindow::on_replay_clicked(){
     
     int index = ui->recordsList->currentItem()->text().at(0).digitValue();
     Record* currRec = allRecords[index];
-    
+    Session* currSes = currRec->getSession();
+
     //use getters to get information about the record and call the
-    sessionTimer = 30;
+    sessionTimer = currSes->getDuration();
+    intensity = currSes->getIntensity();
+    QString repType = currSes->getSessionType();
+
+    if (repType == "Met"){
+        sessionSelection = 1;
+    }else if(repType == "Delta"){
+        sessionSelection = 2;
+    }else if(repType == "Theta"){
+        sessionSelection = 3;
+    }else{
+        sessionSelection = 4;
+    }
     return;
     
 }
