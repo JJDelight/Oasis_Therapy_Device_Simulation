@@ -7,11 +7,7 @@ Teaching Assistant: Esra Ersan (ESRAERSAN@cmail.carleton.ca)
 Members: Joris Kabore (JorisKabore@cmail.carleton.ca) Majd Taweel Jean-Pierre Aupont
 
 Who did what in the project: 
-    Use cases: Shared the main functionality into 3 and all members worked on it
-    Sequence Diagrams: Shared the main functionality into 3 and all members worked on it
-    Activity/State Diagram: Shared the main functionality into 3 and all members worked on it
-    Traceability Matrix: Shared the main functionality into 3 and all members worked on it
-    GUI: mainly Jean-Pierre was the main person for the UI and we helped and added some changes as well
+   
 
 File organization of the deliverables:
     Header files:
