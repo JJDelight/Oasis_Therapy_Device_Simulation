@@ -45,6 +45,9 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::softOn(){
+    int batTimerLeft = batTimer->remainingTime();
+    batTimer->stop();   //Pauses the battery timer, so the battery level is not displayed during this process
+    
     ui->lightOne->setStyleSheet("background-color: green");
     delay(1);
     ui->lightOne->setStyleSheet("background-color: white");
@@ -72,9 +75,13 @@ void MainWindow::softOn(){
     delay(1);
     ui->lightEight->setStyleSheet("background-color: white");
 
+    batTimer->start(batTimerLeft);
 }
 
 void MainWindow::softOff(){
+    int batTimerLeft = batTimer->remainingTime();
+    batTimer->stop();   //Pauses the battery timer, so the battery level is not displayed during this process
+
     ui->lightEight->setStyleSheet("background-color: red");
     delay(1);
     ui->lightEight->setStyleSheet("background-color: white");
@@ -101,6 +108,8 @@ void MainWindow::softOff(){
     ui->lightOne->setStyleSheet("background-color: green");
     delay(1);
     ui->lightOne->setStyleSheet("background-color: white");
+
+    batTimer->start(batTimerLeft);
 }
 
 int MainWindow::getCustomTime(){
@@ -118,10 +127,8 @@ void MainWindow::togglePower(){
         batTimer->stop();   //Pauses the battery timer, so the battery level is not displayed during this process
 
         if(ui->recordRBtn->isChecked()){
-        saveTherapy();
-        timer->start();
+            saveTherapy();
         }
-
 
         sessionTimer = -1;
         ui->sessionTimerLbl->setText("00:00");
@@ -150,6 +157,7 @@ void MainWindow::increasePower(){
         return;
     }
     bat.fullPower();
+    QTextStream(stdout) << "Battery is now Full Power" << endl;
 }
 
 void MainWindow::delay(int secs){
@@ -318,13 +326,13 @@ void MainWindow::on_checkBtn_clicked()
     therapyTimer->setInterval(1000);
     connect(therapyTimer, &QTimer::timeout, this, &MainWindow::updateCountdown);
     therapyTimer->start();
+    timer->start();
 
 }
 
 
 void MainWindow::updateCountdown(){
-    if(sessionTimer < 0 ){
-        drainBattery();
+    if(sessionTimer < 0){
         return;
     }
 
@@ -335,7 +343,6 @@ void MainWindow::updateCountdown(){
 
     if(sessionTimer == 0 && ui->recordRBtn->isChecked()){
         saveTherapy();
-        timer->start();
     }
 
     int minutes = sessionTimer / 60;
@@ -372,8 +379,10 @@ void MainWindow::saveTherapy(){
     int duration;
     if (timeSelection == 1){
         duration = 20;
-    }else{
+    }else if(timeSelection == 2){
         duration=45;
+    }else{
+        duration = getCustomTime();
     }
 
     QString sessiontype;
