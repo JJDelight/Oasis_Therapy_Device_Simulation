@@ -31,11 +31,8 @@ public:
 private slots:
     void togglePower();
     void increasePower();
-
     void on_sessionButton_clicked();
-
     void on_timeButton_clicked();
-
     void on_checkBtn_clicked();
     void updateCountdown();
     void toggleIntensity(bool);
@@ -53,7 +50,7 @@ private:
     int timeSelection;
     int sessionSelection;
     int userSelection;
-    Record* allRecords[10];
+    Record* allRecords[100];
     int numRecs;
     int sessionTimer;
     int intensity;
