@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //connect functions
     connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::togglePower);
-    connect(ui->powerButton, &QPushButton::pressed, this, &MainWindow::increasePower);
 
     connect(ui->rechargeBattery, &QPushButton::pressed, this, &MainWindow::increasePower);
     connect(ui->increaseBtn, &QPushButton::pressed, this, [this](){ emit MainWindow::toggleIntensity(true);});
