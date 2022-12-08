@@ -4,7 +4,7 @@ Team 4
 
 Teaching Assistant: Esra Ersan (ESRAERSAN@cmail.carleton.ca)
 
-Members: Joris Kabore (JorisKabore@cmail.carleton.ca) Majd Taweel Jean-Pierre Aupont
+Members: Joris Kabore (JorisKabore@cmail.carleton.ca), Majd Taweel (majdtaweel@cmail.carleton.ca) Jean-Pierre Aupont (jeanpierreaupont@cmail.carleton.ca)
 
 Who did what in the project: 
    Documentation:
