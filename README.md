@@ -1,6 +1,6 @@
 # 3004_Final_Project
 
-Team 4
+Team 4 (Open this file in VsCode) for proper formatting)
 
 Teaching Assistant: Esra Ersan (ESRAERSAN@cmail.carleton.ca)
 
