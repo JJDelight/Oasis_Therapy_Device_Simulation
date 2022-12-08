@@ -370,6 +370,12 @@ void MainWindow::drainBattery(){
          usage += intensity + sessionSelection;
     }
 
+    if((currLevel - usage) <= 0){
+        bat.setLevel(0);
+        togglePower();
+        return;
+    }
+    
     int newLevel = currLevel - usage;
     bat.setLevel(newLevel);
 }
