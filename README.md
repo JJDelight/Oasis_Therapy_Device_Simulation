@@ -15,12 +15,14 @@ Who did what in the project:
       re-wrote all use cases to match program functionality - Majd
       Sequence Diagram - Majd
       Test Cases - Majd
+      Basic Use Case - Joris
       
    Programming:
       Power (Turn On/off, Ending a session) - JP
       Placement of Electrodes/Connection Test (Handled by the onEars QCheckBox) - Joris
       Battery Level (displaying battery level on device) - JP
-       Selecting a Session (Selecting a custom time for a therapy) - Majd
+      Selecting a Session (Selecting a custom time for a therapy) - Majd
+      Battery Replacement - Joris
       Battery Level (decreasing the battery life, and increasing it to full) - Joris
       Selecting a Session (Using the next button and the CheckBoxes to select a session + 
                            Using the next button and the CheckBoxes to select amount of time +
