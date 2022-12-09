@@ -135,6 +135,11 @@ void MainWindow::togglePower(){
 
         timer->start();
         batTimer->start(batTimerLeft);
+        
+        if(bat.getLevel()<=0){
+            togglePower();
+        }
+
         return;
     }
 
@@ -152,9 +157,6 @@ void MainWindow::togglePower(){
 
 
 void MainWindow::increasePower(){
-    if (!checkAll()){
-        return;
-    }
     bat.fullPower();
     QTextStream(stdout) << "Battery is now Full Power" << endl;
 }
@@ -205,16 +207,17 @@ void MainWindow::displayBattery(){
                 drainBattery();
             }  
             return;
-        case 1:
+        default:
             for(int i=0; i<2; i++){
                 ui->lightOne->setStyleSheet("background-color: green");
                 delay(1);
                 ui->lightOne->setStyleSheet("background-color: white");
                 delay(1);
             }
-            if(sessionTimer<=0 && div!=2){
+            if(sessionTimer<=0){
                 drainBattery();
             }
+            QTextStream(stdout) << "Battery level is critical (" << (bat.getLevel()/10) << "%). Please Recharge (" << bat.getLevel() << "/1000)" << endl; 
             return;
     }
     delay(5);
@@ -313,7 +316,7 @@ void MainWindow::on_checkBtn_clicked()
     }
 
     if (timeSelection == 0 || sessionSelection == 0|| userSelection == 0){
-        QTextStream(stdout) << "Please select time and session type" << endl;
+        QTextStream(stdout) << "Please select time, session type, and user profile" << endl;
         return;
     }
 

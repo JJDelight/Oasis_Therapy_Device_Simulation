@@ -40,6 +40,10 @@ File organization of the deliverables:
     UI file:
         mainwindow.ui
 
+Testing Scenarios:
+    Main Use Case:
+        
+
 Tested scenarios: ones that work and ones that don’t:
     Power on the machine
     Power off the machine
