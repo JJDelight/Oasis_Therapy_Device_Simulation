@@ -74,6 +74,10 @@ void MainWindow::softOn(){
     delay(1);
     ui->lightEight->setStyleSheet("background-color: white");
 
+    if(batTimerLeft <=0){
+        batTimer->start(0);
+        return;
+    }
     batTimer->start(batTimerLeft);
 }
 
@@ -108,6 +112,10 @@ void MainWindow::softOff(){
     delay(1);
     ui->lightOne->setStyleSheet("background-color: white");
 
+    if(batTimerLeft <=0){
+        batTimer->start(0);
+        return;
+    }
     batTimer->start(batTimerLeft);
 }
 
@@ -133,13 +141,16 @@ void MainWindow::togglePower(){
         ui->sessionTimerLbl->setText("00:00");
         softOff();
 
-        timer->start();
-        batTimer->start(batTimerLeft);
-        
         if(bat.getLevel()<=0){
             togglePower();
+            return;
         }
 
+        if(batTimerLeft <=0){
+            batTimer->start(0);
+            return;
+        }
+        batTimer->start(batTimerLeft);
         return;
     }
 
@@ -150,7 +161,7 @@ void MainWindow::togglePower(){
     }else{
         ui->powerLabel->setStyleSheet("background-color: yellow");
         power = !power;
-        timer->start(120000); //Timer to turn off device if no function called (20 minutes)
+        timer->start(20000); //Timer to turn off device if no function called (20 minutes)
         displayBattery();
     }
 }
@@ -193,6 +204,7 @@ void MainWindow::displayBattery(){
             if(sessionTimer<=0){
                 drainBattery();
             }
+            QTextStream(stdout) << "Battery level is Fine (" << (bat.getLevel()/10) << "%) - (" << bat.getLevel() << "/1000)" << endl; 
             break;
         case 2:
             for(int i=0; i<2; i++){
@@ -205,7 +217,8 @@ void MainWindow::displayBattery(){
             }
             if(sessionTimer<=0){
                 drainBattery();
-            }  
+            }
+            QTextStream(stdout) << "Battery level is low (" << (bat.getLevel()/10) << "%). Please Recharge (" << bat.getLevel() << "/1000)" << endl; 
             return;
         default:
             for(int i=0; i<2; i++){
@@ -265,7 +278,6 @@ void MainWindow::on_sessionButton_clicked()
             ui->metRBtn->setChecked(true);
             break;
     }
-    timer->start();
 }
 
 //Function to handle switching the selected time once the "next" button is clicked
@@ -297,7 +309,6 @@ void MainWindow::on_timeButton_clicked()
             ui->twenty->setChecked(true);
             break;
     }
-    timer->start();
 }
 
 //Function to start a session once the pre-requisites are met
@@ -328,8 +339,6 @@ void MainWindow::on_checkBtn_clicked()
     therapyTimer->setInterval(1000);
     connect(therapyTimer, &QTimer::timeout, this, &MainWindow::updateCountdown);
     therapyTimer->start();
-    timer->start();
-
 }
 
 
@@ -471,8 +480,11 @@ void MainWindow::toggleIntensity(bool choice){
     ui->lightTwo->setStyleSheet("background-color: white");
     ui->lightOne->setStyleSheet("background-color: white");
 
+    if(batTimerLeft <=0){
+        batTimer->start(0);
+        return;
+    }
     batTimer->start(batTimerLeft);
-    timer->start();
 }
 
 //Function to handle switching the selected user once the "next" button is clicked
@@ -504,7 +516,6 @@ void MainWindow::on_userButton_clicked()
             break;
     }
     updateTherapy();
-    timer->start();
 }
 
 //Updates the Saved Replays box, based on the selected User
