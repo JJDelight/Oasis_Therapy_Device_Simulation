@@ -1,4 +1,4 @@
-# Oasis_Device_Simulation
+# Oasis Device Simulation
 
 Requirements:  
 -QT Creator Software (Preferably on Linux)  
